@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#071321" />
+  <meta name="description" content="Painel independente de apuração das eleições 2026, com dados públicos do TSE e atualização automática." />
+  <title>Central de Apuração • Eleições 2026</title>
+  <style>
+    :root{--bg:#070e1b;--sidebar:#0b1729;--panel:#101d31;--panel2:#11223b;--line:#243651;--soft:#8294af;--muted:#abbcd1;--white:#f4f7fd;--green:#27d6a0;--blue:#50a7ff;--red:#f17181;--gold:#f9c66d;--radius:17px;--shadow:0 18px 55px rgba(0,0,0,.16)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 84% -10%,#143052 0%,transparent 43%),var(--bg);color:var(--white);font:14px/1.5 Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-variant-numeric:tabular-nums}button,select,input{font:inherit}button{cursor:pointer}a{color:#86c8ff}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #66c1ff;outline-offset:3px}
+    .shell{max-width:1500px;margin:0 auto;padding:0 28px 70px}.topline{height:7px;background:linear-gradient(90deg,#23bb90 0 35%,#f0df86 35% 65%,#559dec 65% 100%)}
+    header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:27px 0 18px;border-bottom:1px solid rgba(179,200,222,.11)}.brand{display:flex;gap:13px;align-items:center}.logo{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#186b75,#0b8e77);border:1px solid #358d9b;font-weight:900;font-size:23px;box-shadow:0 8px 24px #00776232}.brand strong{display:block;font-size:14px;letter-spacing:.09em;font-weight:850}.brand small{display:block;color:var(--soft);font-size:11px;letter-spacing:.12em}.head-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.tag{border:1px solid #2b425b;background:#111f31;border-radius:99px;padding:7px 12px;display:flex;align-items:center;gap:7px;color:#d1e4f3;font-size:12px;font-weight:700}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #1a826040}.dot.error{background:var(--red);box-shadow:0 0 0 4px #d65b4930}.dot.wait{background:var(--gold);box-shadow:0 0 0 4px #b0833330}.btn{border:1px solid #354967;background:#182a43;color:#eef5ff;border-radius:11px;padding:10px 15px;font-weight:750;transition:background .2s,transform .15s}.btn:hover{background:#244062}.btn:active{transform:scale(.98)}.btn.primary{border-color:#246d8b;background:#12658a}.btn.primary:hover{background:#1780a9}.btn:disabled{opacity:.55;cursor:progress}.btn.ghost{background:transparent}.btn.small{padding:7px 11px;font-size:12px}
+    .heading{display:flex;align-items:flex-end;justify-content:space-between;gap:22px;padding:35px 0 23px}.eyebrow{color:#5ee2ba;letter-spacing:.2em;text-transform:uppercase;font-weight:900;font-size:11px}.heading h1{font-size:clamp(30px,4.5vw,55px);line-height:1.08;margin:8px 0 13px;letter-spacing:-.055em;font-weight:880}.heading h1 span{background:linear-gradient(95deg,#e7f4ff,#7ac8fe);background-clip:text;-webkit-background-clip:text;color:transparent}.sub{color:#a8bad0;font-size:14px;margin:0;max-width:660px}.actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.select{appearance:none;background:#13243a;color:#d9e9f7;padding:10px 32px 10px 12px;border-radius:10px;border:1px solid #334c69;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpath d='m1 1 6 6 6-6' fill='none' stroke='%23a6bdd4' stroke-width='2'/%3E%3C/svg%3E");background-position:calc(100% - 11px) center;background-repeat:no-repeat}.update-row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:17px;background:#122036;border:1px solid #243955;border-radius:12px;padding:11px 15px}.update-row .left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;color:#b9c9d9}.update-row strong{color:#e2f4fa}.update-row .right{color:#8fa4bf;font-size:12px}.warning{display:none;background:#3c291d;border:1px solid #956634;padding:14px 18px;border-radius:12px;margin-bottom:17px;color:#f8d6a5}.warning.show{display:block}.warning strong{color:#ffe9cc}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:17px}.stat{border:1px solid var(--line);background:linear-gradient(160deg,#16263c 0%,#101b2e 100%);border-radius:var(--radius);padding:19px 20px;position:relative;overflow:hidden;min-height:137px}.stat::before{content:'';width:96px;height:96px;position:absolute;right:-38px;top:-37px;border-radius:100%;background:#77b8ea12}.stat small{display:block;color:#a4b5cc;font-weight:750;margin-bottom:18px;letter-spacing:.015em}.stat .value{font-size:clamp(24px,3.2vw,34px);font-weight:900;letter-spacing:-.04em;line-height:1}.stat .foot{display:block;color:#7f97b1;font-size:11px;margin-top:12px}.value.green{color:#57e2b6}
+    .main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,.85fr);gap:16px;margin-bottom:20px}.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(22,39,62,.95),rgba(13,26,46,.94));border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}.card-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:18px}.card-head h2{font-size:19px;letter-spacing:-.035em;margin:0 0 4px}.card-head p{margin:0;color:#8499b5;font-size:12px}.chip{border-radius:100px;border:1px solid #39526d;background:#1a2c43;color:#c7e3f3;font-weight:700;font-size:11px;padding:5px 10px;white-space:nowrap}.candidates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.candidate{border:1px solid #2a3e59;background:#102038;border-radius:13px;padding:17px 17px 15px;position:relative;overflow:hidden}.candidate:before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--candidate-color)}.candidate .top{display:flex;align-items:center;gap:10px}.badge-num{display:grid;place-items:center;width:36px;height:36px;flex:0 0 auto;border-radius:11px;font-size:15px;font-weight:900;color:#fff;background:var(--candidate-color)}.candidate .info strong{display:block;font-size:13px;line-height:1.2}.candidate .info small{color:#8d9fb9;font-weight:600}.candidate .pct{font-size:36px;font-weight:900;letter-spacing:-.07em;line-height:1.2;margin-top:17px}.candidate .votes{font-size:12px;color:#a3b6ca;margin:1px 0 13px}.track{background:#26374f;border-radius:100px;height:7px;overflow:hidden}.fill{background:var(--candidate-color,#55adff);height:100%;width:0;border-radius:100px;transition:width .7s}.footnote{color:#8399b1;font-size:11px;margin:16px 0 0}.mid-sub{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px}.mini{border-top:1px solid #293b54;padding-top:14px}.mini .label{font-size:11px;color:#8a9eb9}.mini strong{display:block;font-size:18px;margin-top:4px}.progress-display{display:flex;gap:20px;align-items:center;justify-content:center;margin:18px 0 23px}.ring{width:158px;height:158px;border-radius:50%;background:conic-gradient(#30d1a6 var(--ring-pct,0%),#2a3d55 var(--ring-pct,0%));display:grid;place-items:center;flex:0 0 auto;position:relative}.ring::before{content:"";position:absolute;inset:14px;border-radius:50%;background:#14233a}.ring>div{position:relative;text-align:center}.ring strong{font-size:35px;font-weight:900;letter-spacing:-.06em;display:block}.ring small{font-size:10px;color:#9aacbf;font-weight:700}.ring-meta{min-width:130px}.ring-meta small{color:#8ca5ba;font-size:11px;display:block;margin-top:10px}.ring-meta strong{font-size:18px;display:block;margin:1px 0 12px}.lines{border-top:1px solid #2d4057;padding-top:14px;display:grid;gap:13px}.lines>div{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#a1b4c9}.lines strong{color:#e8f1fa}
+    .section-head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:13px;margin:34px 0 15px}.section-head h2{font-size:24px;letter-spacing:-.035em;margin:0 0 4px}.section-head p{margin:0;font-size:12px;color:#91a6be}.filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.filter-btn{padding:8px 13px;background:#15243a;border:1px solid #2d415b;color:#94a8c1;border-radius:10px;font-size:12px;font-weight:700}.filter-btn.on{background:#214762;border-color:#3883a0;color:#e4f9ff}.search{background:#13243a;border:1px solid #304661;border-radius:10px;padding:9px 13px;color:#e6f1fd;min-width:155px;width:190px;outline:none}.search::placeholder{color:#788da6}
+    .table-card{border:1px solid var(--line);border-radius:16px;background:#101d30;overflow:hidden}.table-wrap{overflow-x:auto}.states-table{border-collapse:collapse;width:100%;min-width:840px}.states-table th{text-align:left;padding:16px 18px;background:#16253d;color:#8fa5bd;font-size:11px;text-transform:uppercase;letter-spacing:.095em;white-space:nowrap}.states-table th:nth-child(2){min-width:175px}.states-table td{padding:14px 18px;border-top:1px solid #26374d;vertical-align:middle;font-size:12px}.states-table tbody tr{transition:background .15s;cursor:pointer}.states-table tbody tr:hover,.states-table tbody tr:focus-visible{background:#192f4b}.state-name{display:flex;align-items:center;gap:11px;font-weight:750;font-size:13px;white-space:nowrap}.uf{display:inline-grid;place-items:center;width:36px;height:32px;border-radius:8px;background:#203750;color:#bfe0f5;font-size:12px;font-weight:900}.state-name small{display:block;color:#8198b4;font-size:10px}.state-name>.names>strong{font-size:13px}.state-name>.names>small{font-size:10px}.big-pct{font-weight:850;font-size:13px;display:block}.sub-count{display:block;color:#8fa3bc;font-size:10px;margin-top:1px}.small-track{height:5px;background:#27374d;overflow:hidden;border-radius:10px;margin-top:7px}.small-track b{display:block;height:100%;width:0;background:var(--green);border-radius:10px}.candidate-cell strong{font-size:13px}.candidate-cell .under{display:block;background:linear-gradient(90deg,var(--bar) var(--val),#30435b var(--val));height:4px;border-radius:10px;margin-top:6px;width:100px;max-width:100%}.leader{font-size:11px;font-weight:800;border:1px solid;border-radius:99px;white-space:nowrap;padding:6px 9px;display:inline-flex;align-items:center;gap:6px}.leader:before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}.muted{color:#8ea4bc}.click-hint{text-align:right;color:#729bb9}.empty{padding:24px!important;color:#b3c2d1;text-align:center}.table-foot{display:flex;justify-content:space-between;gap:10px;padding:14px 19px;background:#132238;border-top:1px solid #293b51;color:#91a7bd;font-size:11px;flex-wrap:wrap}
+    .open-help{background:#132a40;border:1px solid #457092;padding:13px 16px;border-radius:12px;margin:0 0 17px;color:#e4f0fb;font-size:13px}.open-help a{font-weight:750}.open-help[hidden]{display:none!important}.open-help strong{color:#f5fbff}    .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:22px}.info-card{border:1px solid #293b54;border-radius:13px;padding:17px;background:#101e31}.info-card strong{font-size:13px}.info-card p{margin:8px 0 0;color:#97acc4;font-size:12px}.info-card a{font-weight:700}.footbar{text-align:center;font-size:11px;color:#7d94ac;margin-top:33px}
+    .overlay{position:fixed;inset:0;background:#030916ad;z-index:25;display:none;justify-content:flex-end;backdrop-filter:blur(4px)}.overlay.open{display:flex}.drawer{width:min(460px,100%);height:100%;background:#0e1e32;border-left:1px solid #42617c;box-shadow:-20px 0 80px #0008;overflow-y:auto;padding:28px}.drawer-top{display:flex;justify-content:space-between;align-items:center}.drawer .detail-name{font-size:30px;letter-spacing:-.04em;margin:25px 0 2px}.drawer .detail-sub{color:#89a6bf;margin:0 0 22px}.drawer .block{padding:20px;border-radius:14px;background:#162840;border:1px solid #2d4563;margin:12px 0}.drawer .block h3{margin:0 0 13px;font-size:15px}.detail-row{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:9px 0;font-size:13px;color:#abc0d5}.detail-row strong{color:#fff}.detail-cand{padding:14px 0;border-top:1px solid #30455f}.detail-cand:first-child{border-top:0;padding-top:0}.detail-cand .t{display:flex;justify-content:space-between;gap:10px}.detail-cand .t strong{font-size:13px}.detail-cand .t b{font-size:20px}.detail-cand .votes{display:block;color:#91a9c2;font-size:11px;margin-bottom:8px}.detail-cand .track{height:8px}
+    .spinner{width:14px;height:14px;border:2px solid #83b0c4;border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:-2px;margin-right:4px}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}.main-grid{grid-template-columns:1fr}.progress-display{justify-content:flex-start}.heading{align-items:flex-start;flex-direction:column;gap:15px}}@media(max-width:600px){.shell{padding:0 14px 45px}header{padding:17px 0}.brand small{font-size:9px}.brand strong{font-size:12px}.tag.date{display:none}.heading{padding:27px 0 17px}.heading h1{font-size:34px}.stats{gap:10px}.stat{padding:15px;min-height:119px}.stat small{margin-bottom:13px}.stat .value{font-size:27px}.stat .foot{font-size:10px}.card{padding:17px}.candidates{gap:8px}.candidate{padding:13px 11px}.candidate .top{gap:7px}.badge-num{width:30px;height:30px;font-size:13px}.candidate .info strong{font-size:11px}.candidate .pct{font-size:29px}.candidate .votes{font-size:10px}.footer-grid{grid-template-columns:1fr}.drawer{padding:18px}.actions{width:100%}.section-head h2{font-size:22px}.filters{gap:6px}.filter-btn{padding:7px 9px}.search{width:100%}.ring{width:142px;height:142px}.ring strong{font-size:30px}.update-row{padding:10px 12px}.head-right .btn{padding:8px 10px}}
+  </style>
+</head>
+<body>
+<div class="topline" aria-hidden="true"></div>
+<div class="shell">
+  <header>
+    <div class="brand"><div class="logo" aria-hidden="true">✓</div><div><strong>CENTRAL ELEITORAL</strong><small>BRASIL • ELEIÇÕES 2026</small></div></div>
+    <div class="head-right"><span class="tag date">DOMINGO · 25 OUT 2026</span><span class="tag"><span class="dot wait" id="statusDot"></span><span id="statusLabel">Conectando ao TSE</span></span><a class="btn small ghost" href="https://resultados.tse.jus.br/" target="_blank" rel="noopener">TSE ↗</a></div>
+  </header>
+  <section class="heading">
+    <div><div class="eyebrow">Dados públicos • Tribunal Superior Eleitoral</div><h1>Apuração <span>em tempo real.</span></h1><p class="sub">2º turno presidencial • Brasil, 26 estados e Distrito Federal. Números recebidos diretamente dos arquivos oficiais do TSE, sem estimativas ou projeções.</p></div>
+    <div class="actions"><label for="intervalo" style="font-size:12px;color:#a7bbd0">Atualização:</label><select class="select" id="intervalo" aria-label="Intervalo de atualização"><option value="30">30 segundos</option><option value="60" selected>1 minuto</option><option value="120">2 minutos</option><option value="300">5 minutos</option></select><button class="btn primary" id="btnRefresh">↻ Atualizar agora</button></div>
+  </section>
+  <div class="update-row"><div class="left"><span id="refreshMark" class="spinner"></span><strong id="lastUpdate">Buscando informações oficiais...</strong><span id="timeInfo">Horário de Brasília (UTC−3)</span></div><div class="right" id="nextUpdate">Atualização automática ativada</div></div>
+  <div class="open-help" id="openHelp" hidden role="status"><strong>Você abriu um arquivo local.</strong> Em alguns visualizadores de arquivos do iPhone, o código interativo não é executado. Para consultar os dados em tempo real, abra este painel como site publicado (https) em um navegador, ou acesse o <a href="https://resultados.tse.jus.br/" target="_blank" rel="noopener">site oficial do TSE</a>.</div>
+  <noscript><div class="open-help"><strong>JavaScript desativado ou indisponível.</strong> Este painel só atualiza dados em um navegador que execute JavaScript. Pré-visualizadores de HTML no celular podem mostrar apenas parte da página. <a href="https://resultados.tse.jus.br/">Consultar TSE</a>.</div></noscript>
+  <div class="warning" id="warning" role="alert"><strong>Atenção:</strong> <span id="warningText"></span> <a href="https://resultados.tse.jus.br/" rel="noopener" target="_blank">Consultar TSE ↗</a></div>
+  <section class="stats" aria-label="Indicadores nacionais">
+    <div class="stat"><small>Seções totalizadas • Brasil</small><div class="value green" id="kpiPct">—</div><span class="foot" id="kpiPctFoot">Aguardando dados do TSE</span></div>
+    <div class="stat"><small>Seções computadas</small><div class="value" id="kpiSections">—</div><span class="foot" id="kpiSectionsFoot">Das seções previstas</span></div>
+    <div class="stat"><small>Votos válidos</small><div class="value" id="kpiValid">—</div><span class="foot">Total registrado até o boletim</span></div>
+    <div class="stat"><small>Comparecimento registrado</small><div class="value" id="kpiTurnout">—</div><span class="foot" id="kpiTurnoutFoot">Na parcela já totalizada</span></div>
+  </section>
+  <section class="main-grid">
+    <div class="card" aria-label="Resultado presidencial nacional"><div class="card-head"><div><h2>Presidente da República</h2><p>Brasil inteiro • percentuais sobre os votos válidos</p></div><span class="chip">2º TURNO</span></div><div class="candidates" id="candidates"><div class="candidate"><div class="info"><strong>Aguardando dados</strong><small>Fonte: TSE</small></div><div class="pct">—</div></div><div class="candidate"><div class="info"><strong>Aguardando dados</strong><small>Fonte: TSE</small></div><div class="pct">—</div></div></div><p class="footnote" id="disclaimerCandidate">Resultados parciais não constituem proclamação de eleito.</p><div class="mid-sub"><div class="mini"><div class="label">Votos brancos</div><strong id="kpiBlank">—</strong></div><div class="mini"><div class="label">Votos nulos</div><strong id="kpiNull">—</strong></div></div></div>
+    <div class="card"><div class="card-head"><div><h2>Andamento nacional</h2><p>Seções totalizadas no Brasil</p></div><span class="chip" id="nationalStatus">AGUARDANDO</span></div><div class="progress-display"><div class="ring" id="progressRing" role="img" aria-label="Progresso de seções totalizadas"><div><strong id="ringValue">—</strong><small>APURAÇÃO</small></div></div><div class="ring-meta"><small>Seções pendentes</small><strong id="pendingSections">—</strong><small>Boletim gerado pelo TSE</small><strong id="tseTime" style="font-size:14px">—</strong></div></div><div class="lines"><div><span>Eleitorado apto</span><strong id="voters">—</strong></div><div><span>Abstenções registradas</span><strong id="abstention">—</strong></div><div><span>Estados com dados válidos</span><strong id="loadedStates">0/27</strong></div></div></div>
+  </section>
+  <section id="estados"><div class="section-head"><div><h2>Apuração por estado</h2><p>Toque em um estado para ver os detalhes. No celular, arraste a tabela para o lado. Os boletins de cada UF podem ter horários diferentes.</p></div><div class="filters"><button class="filter-btn on" data-region="Todas">Todos</button><button class="filter-btn" data-region="Norte">Norte</button><button class="filter-btn" data-region="Nordeste">Nordeste</button><button class="filter-btn" data-region="Centro-Oeste">Centro-Oeste</button><button class="filter-btn" data-region="Sudeste">Sudeste</button><button class="filter-btn" data-region="Sul">Sul</button><input id="search" class="search" type="search" placeholder="Buscar estado ou sigla" aria-label="Buscar estado ou sigla" /></div></div>
+  <div class="table-card"><div class="table-wrap"><table class="states-table"><thead><tr><th>Estado</th><th>Seções totalizadas</th><th id="colCandidateA">Candidatura 1</th><th id="colCandidateB">Candidatura 2</th><th>À frente neste boletim</th><th>Horário TSE</th><th></th></tr></thead><tbody id="statesBody"></tbody></table></div><div class="table-foot"><span id="statesCount">27 unidades da Federação</span><span>Fonte: <a href="https://resultados.tse.jus.br/" rel="noopener" target="_blank">TSE • divulgação de resultados ↗</a></span></div></div></section>
+  <div class="footer-grid"><div class="info-card"><strong>ⓘ Como interpretar</strong><p>“Seções totalizadas” representa o percentual de seções cujo resultado já foi recebido e incorporado pelo TSE. Os percentuais das candidaturas consideram apenas os votos válidos. Quem está à frente pode mudar durante a apuração.</p></div><div class="info-card"><strong>◷ Frequência e confiabilidade</strong><p>Este painel procura novos boletins a cada 1 minuto por padrão, somente enquanto a página estiver aberta. Os números são apresentados com o horário de geração do arquivo oficial. Se houver falha na consulta, o painel identifica o problema e não inventa valores.</p></div></div>
+  <div class="footbar">PAINEL INDEPENDENTE • NÃO AFILIADO AO TSE • FONTE: RESULTADOS.TSE.JUS.BR • ELEIÇÕES 2026</div>
+</div>
+<div class="overlay" id="overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Detalhes do estado"><div class="drawer" id="drawer"><div class="drawer-top"><span class="eyebrow">DETALHAMENTO POR ESTADO</span><button class="btn small" id="closeDrawer" aria-label="Fechar detalhes">✕ Fechar</button></div><h2 class="detail-name" id="detailTitle">—</h2><p class="detail-sub" id="detailSubtitle">—</p><div class="block"><h3>Votação presidencial</h3><div id="detailCandidates">Carregando...</div></div><div class="block"><h3>Andamento da apuração</h3><div id="detailNumbers"></div></div><p class="footnote" id="detailSource">Fonte: Tribunal Superior Eleitoral</p><a class="btn primary" target="_blank" rel="noopener" href="https://resultados.tse.jus.br/">Conferir no site oficial ↗</a></div></div>
+<script>
+'use strict';
+/*
+ * Fonte oficial: https://www.tse.jus.br/eleicoes/informacoes-tecnicas-sobre-a-divulgacao-de-resultados
+ * 2º turno, eleição geral federal: 6258. Arquivos públicos /dados/<uf>/<uf>-c0001-e006258-u.json
+ * Os votos, percentuais e progresso são lidos do arquivo oficial. Nenhum dado eleitoral simulado é exibido.
+ */
+const ELECTION = '6258';
+const SOURCE = `https://resultados.tse.jus.br/oficial/ele2026/${ELECTION}/dados`;
+const UFS = [
+ ['AC','Acre','Norte'],['AL','Alagoas','Nordeste'],['AP','Amapá','Norte'],['AM','Amazonas','Norte'],
+ ['BA','Bahia','Nordeste'],['CE','Ceará','Nordeste'],['DF','Distrito Federal','Centro-Oeste'],['ES','Espírito Santo','Sudeste'],
+ ['GO','Goiás','Centro-Oeste'],['MA','Maranhão','Nordeste'],['MT','Mato Grosso','Centro-Oeste'],['MS','Mato Grosso do Sul','Centro-Oeste'],
+ ['MG','Minas Gerais','Sudeste'],['PA','Pará','Norte'],['PB','Paraíba','Nordeste'],['PR','Paraná','Sul'],
+ ['PE','Pernambuco','Nordeste'],['PI','Piauí','Nordeste'],['RJ','Rio de Janeiro','Sudeste'],['RN','Rio Grande do Norte','Nordeste'],
+ ['RS','Rio Grande do Sul','Sul'],['RO','Rondônia','Norte'],['RR','Roraima','Norte'],['SC','Santa Catarina','Sul'],
+ ['SP','São Paulo','Sudeste'],['SE','Sergipe','Nordeste'],['TO','Tocantins','Norte']
+].map(([code,name,region])=>({code,name,region})).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
+const el = id => document.getElementById(id);
+const numberFmt = new Intl.NumberFormat('pt-BR');
+const percentFmt = new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const COLORS = {'13':'#f17181','22':'#59a7ff'};
+const state = {national:null,states:{}, region:'Todas', query:'',selected:null,busy:false,errors:[],lastSuccess:null,deadline:0,interval:60,enabled:true,loaded:false};
+const formatNum = value => value===null || value===undefined || value==='' ? '—' : numberFmt.format(Number(value)||0);
+const formatPct = value => value===null || value===undefined || Number.isNaN(+value) ? '—' : percentFmt.format(+value)+'%';
+const n = value => Number(String(value??'0').replace(',','.'))||0;
+const dateTime = (date,time) => date && time ? `${date} · ${time}` : 'Ainda não divulgado';
+if(location.protocol === 'file:') el('openHelp').hidden = false;
+function colorOf(candidate,index){return COLORS[candidate?.number] || ['#f17181','#59a7ff','#9b8bf6','#f4c770'][index%4];}
+function safe(text){return String(text??'').replace(/[&<>"']/g,chr=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[chr]));}
+function parseResult(raw, code){
+ if(!raw || typeof raw !== 'object' || String(raw.ele)!==ELECTION) throw new Error('Arquivo de eleição incorreta');
+ const office = (raw.carg||[]).find(x=>String(x.cd)==='1');
+ if(!office) throw new Error('Cargo de presidente ausente do arquivo');
+ const candidates = [];
+ for (const group of (office.agr||[])) for (const party of (group.par||[])) for (const candidate of (party.cand||[])) {
+   candidates.push({name:String(candidate.nmu||candidate.nm||'Não informado'),party:party.sg||'',number:String(candidate.n||party.n||''),votes:n(candidate.vap),pct:n(candidate.pvapn ?? candidate.pvap)});
+ }
+ // Um arquivo pode estar disponível antes do início da totalização: respeitar dv e a contagem de seções.
+ const sections = n(raw.s?.st),totalSections = n(raw.s?.ts);
+ const hasVotes = raw.dv==='s' && sections>0;
+ return {code,date:raw.dt||raw.dg||'',time:raw.ht||raw.hg||'',generated:raw.dg&&raw.hg?dateTime(raw.dg,raw.hg):dateTime(raw.dt,raw.ht),hasVotes,sections,totalSections,progress:totalSections>0?sections/totalSections*100:n(raw.s?.pstn||raw.s?.pst),
+  candidates:hasVotes?candidates.sort((a,b)=>b.votes-a.votes):[],validVotes:hasVotes?n(raw.v?.vv):null,blankVotes:hasVotes?n(raw.v?.vb):null,nullVotes:hasVotes?n(raw.v?.vn):null,
+  attendees:hasVotes?n(raw.e?.c):null,abstention:hasVotes?n(raw.e?.a):null,voterTotal:n(raw.e?.te),receivedAt:Date.now()};
+}
+function urlFor(code){const u=code.toLowerCase();return `${SOURCE}/${u}/${u}-c0001-e006258-u.json`;}
+async function fetchOne(code){
+ const abort=new AbortController();const timer=setTimeout(()=>abort.abort(),13000);
+ try {const response=await fetch(urlFor(code),{cache:'no-cache',signal:abort.signal});
+   if(!response.ok)throw new Error(`HTTP ${response.status}`);
+   return parseResult(await response.json(),code);
+ } finally{clearTimeout(timer)}
+}
+async function fetchAll(){
+ if(state.busy)return;
+ state.busy=true; state.errors=[];
+ el('btnRefresh').disabled=true;el('refreshMark').className='spinner';el('lastUpdate').textContent='Consultando boletins do TSE...';
+ setStatus('wait','Atualizando');
+ const codes=['BR',...UFS.map(x=>x.code)];let cursor=0,successCount=0;
+ const worker=async()=>{while(cursor<codes.length){const code=codes[cursor++];try{
+  const result=await fetchOne(code);if(code==='BR')state.national=result;else state.states[code]=result;successCount++;
+ }catch(error){state.errors.push(`${code}: ${error?.message||'Falha de acesso'}`)}
+ // renderizar à medida que os boletins são recebidos, sem esperar outros estados
+ if(code==='BR')renderNational();else renderTable();
+ }};
+ await Promise.all(Array.from({length:5},worker));
+ state.busy=false;state.loaded=true;state.deadline=Date.now()+state.interval*1000;
+ el('btnRefresh').disabled=false;el('refreshMark').className='dot '+(successCount?'':'error');
+ if(successCount)state.lastSuccess=new Date();
+ renderNational();renderTable();renderDrawer();renderStatus(successCount);
+}
+function setStatus(mode,text){el('statusDot').className='dot '+(mode==='error'?'error':mode==='wait'?'wait':'');el('statusLabel').textContent=text;}
+function renderStatus(successCount){
+ const count=Object.keys(state.states).length;
+ const hasNational=Boolean(state.national);
+ const hasAll=hasNational && count===27 && !state.errors.length;
+ const warn=el('warning');warn.classList.toggle('show',state.errors.length>0);
+ const retryMsg=state.errors.length?`Falha ao atualizar ${state.errors.length} arquivo(s): ${state.errors.slice(0,4).join(' • ')}${state.errors.length>4?'…':''}. ${successCount?'Os últimos boletins disponíveis continuam sendo exibidos.':'O navegador não conseguiu acessar os arquivos. Se estiver no iPhone, evite a pré-visualização do arquivo e publique o painel em HTTPS; confira também a conexão e as permissões de acesso do TSE.'}`:'';
+ el('warningText').textContent=retryMsg;
+ if(!successCount&&!hasNational){setStatus('error','Dados indisponíveis');el('lastUpdate').textContent='Não foi possível consultar o TSE';}
+ else if(state.errors.length){setStatus('wait','Parcialmente atualizado');el('lastUpdate').textContent=`Dados recebidos • ${successCount} de 28 consultas atualizadas`;}
+ else if(hasAll){setStatus('ok','Conectado ao TSE');el('lastUpdate').textContent=`Atualizado nesta página às ${new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(state.lastSuccess)}`;}
+ else {setStatus('wait','Carregando');el('lastUpdate').textContent=`Carregados ${count} dos 27 estados`}
+}
+function renderNational(){
+ const r=state.national;if(!r)return;
+ el('kpiPct').textContent=formatPct(r.progress);el('kpiPctFoot').textContent=`Boletim TSE: ${r.time||'horário não divulgado'}`;
+ el('kpiSections').textContent=formatNum(r.sections);el('kpiSectionsFoot').textContent=`de ${formatNum(r.totalSections)} seções`;
+ el('kpiValid').textContent=r.hasVotes?formatNum(r.validVotes):'—';
+ el('kpiTurnout').textContent=r.hasVotes?formatNum(r.attendees):'—';
+ el('kpiTurnoutFoot').textContent='Comparecimento nas seções totalizadas';
+ el('kpiBlank').textContent=r.hasVotes?formatNum(r.blankVotes):'—';el('kpiNull').textContent=r.hasVotes?formatNum(r.nullVotes):'—';
+ el('voters').textContent=formatNum(r.voterTotal);el('abstention').textContent=r.hasVotes?formatNum(r.abstention):'—';
+ el('tseTime').textContent=r.time || 'Aguardando';el('pendingSections').textContent=formatNum(Math.max(0,r.totalSections-r.sections));
+ el('progressRing').style.setProperty('--ring-pct',`${Math.min(r.progress,100)}%`);el('ringValue').textContent=formatPct(r.progress);
+ el('nationalStatus').textContent=!r.hasVotes?'SEM TOTALIZAÇÃO':r.progress>=100?'100% DAS SEÇÕES':'EM APURAÇÃO';
+ const candidates = r.candidates.slice().sort((a,b)=>n(a.number)-n(b.number));
+ const fallback=[{name:'Candidatura',number:'—',party:'',pct:0,votes:0},{name:'Candidatura',number:'—',party:'',pct:0,votes:0}];
+ const used=r.hasVotes?candidates:fallback;
+ el('candidates').innerHTML=used.map((c,i)=>{const clr=colorOf(c,i);return `<div class="candidate" style="--candidate-color:${clr}"><div class="top"><div class="badge-num">${safe(c.number)}</div><div class="info"><strong>${r.hasVotes?safe(c.name):'Aguardando apuração'}</strong><small>${safe(c.party||'Fonte: TSE')}</small></div></div><div class="pct">${r.hasVotes?formatPct(c.pct):'—'}</div><div class="votes">${r.hasVotes?formatNum(c.votes)+' votos':'Dados ainda não disponíveis'}</div><div class="track"><div class="fill" style="width:${Math.min(100,Math.max(0,c.pct))}%"></div></div></div>`}).join('');
+ if(r.hasVotes&&candidates.length>=2){el('colCandidateA').textContent=candidates[0].name+' ('+candidates[0].number+')';el('colCandidateB').textContent=candidates[1].name+' ('+candidates[1].number+')';}
+ el('disclaimerCandidate').textContent=r.hasVotes?'As barras representam os votos já totalizados, não uma projeção do resultado final.':'Aguardando o primeiro boletim válido de totalização.';
+}
+function renderTable(){
+ const p=state.national?.candidates||[];const a=p.find(x=>x.number==='13')||p[0];const b=p.find(x=>x.number==='22')||p.find(x=>x.number!==a?.number);
+ const filtered=UFS.filter(u=>(state.region==='Todas'||u.region===state.region)&&(!state.query||(`${u.name} ${u.code}`).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(state.query)));
+ el('statesCount').textContent=`${filtered.length} de 27 unidades da Federação • ${Object.keys(state.states).length} boletins recebidos`;
+ const rows=filtered.map(u=>{const r=state.states[u.code];
+ if(!r)return `<tr tabindex="0" data-code="${u.code}" aria-label="Detalhar ${safe(u.name)}"><td><div class="state-name"><span class="uf">${u.code}</span><span class="names"><strong>${safe(u.name)}</strong><small>${safe(u.region)}</small></span></div></td><td class="muted">Aguardando consulta...</td><td>—</td><td>—</td><td class="muted">—</td><td class="muted">—</td><td class="click-hint">›</td></tr>`;
+ const progress=Math.min(100,Math.max(0,r.progress));const ca=r.candidates.find(c=>c.number===a?.number);const cb=r.candidates.find(c=>c.number===b?.number);
+ const leader=r.hasVotes?r.candidates[0]:null;const clr=leader?colorOf(leader,r.candidates.indexOf(leader)):'#90a3b7';
+ const candidateCell=(c)=>c?`<div class="candidate-cell"><strong>${formatPct(c.pct)}</strong><span class="under" style="--bar:${colorOf(c)};--val:${Math.min(100,Math.max(0,c.pct))}%"></span><span class="sub-count">${formatNum(c.votes)} votos</span></div>`:'<span class="muted">—</span>';
+ return `<tr tabindex="0" data-code="${u.code}" aria-label="Detalhar ${safe(u.name)}"><td><div class="state-name"><span class="uf">${u.code}</span><span class="names"><strong>${safe(u.name)}</strong><small>${safe(u.region)}</small></span></div></td><td><span class="big-pct">${formatPct(progress)}</span><div class="small-track"><b style="width:${progress}%"></b></div><span class="sub-count">${formatNum(r.sections)} de ${formatNum(r.totalSections)}</span></td><td>${candidateCell(ca)}</td><td>${candidateCell(cb)}</td><td>${leader?`<span class="leader" style="color:${clr};border-color:${clr}44;background:${clr}11">${safe(leader.name)}</span>`:'<span class="muted">Aguardando</span>'}</td><td class="muted">${safe(r.time||'—')}</td><td class="click-hint">›</td></tr>`;
+ });el('statesBody').innerHTML=rows.join('')||'<tr><td colspan="7" class="empty">Nenhum estado encontrado para este filtro.</td></tr>';
+ el('loadedStates').textContent=Object.values(state.states).filter(s=>s.hasVotes).length+'/27';
+}
+function openDrawer(code){const u=UFS.find(x=>x.code===code);if(!u)return;state.selected=code;el('detailTitle').textContent=u.name;el('detailSubtitle').textContent=`${u.code} • ${u.region} • 2º turno presidencial`;el('overlay').classList.add('open');el('overlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';renderDrawer();el('closeDrawer').focus();}
+function closeDrawer(){el('overlay').classList.remove('open');el('overlay').setAttribute('aria-hidden','true');document.body.style.overflow='';state.selected=null;}
+function renderDrawer(){if(!state.selected)return;const r=state.states[state.selected];if(!r){el('detailCandidates').textContent='Aguardando dados oficiais deste estado...';el('detailNumbers').innerHTML='Aguarde a próxima consulta.';return;}
+ el('detailCandidates').innerHTML=r.candidates.length?r.candidates.map((c,i)=>`<div class="detail-cand" style="--candidate-color:${colorOf(c,i)}"><div class="t"><strong>${safe(c.name)} · ${safe(c.party)} · ${safe(c.number)}</strong><b>${formatPct(c.pct)}</b></div><span class="votes">${formatNum(c.votes)} votos</span><div class="track"><div class="fill" style="width:${Math.max(0,Math.min(100,c.pct))}%"></div></div></div>`).join(''):'Ainda não existem votos totalizados disponíveis para este estado.';
+ const metrics=[['Seções totalizadas',`${formatPct(r.progress)}`],['Seções contabilizadas',`${formatNum(r.sections)} / ${formatNum(r.totalSections)}`],['Votos válidos',r.hasVotes?formatNum(r.validVotes):'—'],['Brancos',r.hasVotes?formatNum(r.blankVotes):'—'],['Nulos',r.hasVotes?formatNum(r.nullVotes):'—'],['Comparecimento',r.hasVotes?formatNum(r.attendees):'—'],['Abstenção',r.hasVotes?formatNum(r.abstention):'—'],['Eleitorado apto',formatNum(r.voterTotal)],['Boletim do TSE',dateTime(r.date,r.time)]];
+ el('detailNumbers').innerHTML=metrics.map(([key,value])=>`<div class="detail-row"><span>${safe(key)}</span><strong>${safe(value)}</strong></div>`).join('');
+ el('detailSource').textContent=`Arquivo de ${state.selected} • Fonte: TSE • Consulta desta página: ${new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(new Date(r.receivedAt))}`;
+}
+function countdown(){if(!state.deadline){el('nextUpdate').textContent='Atualização automática ativada';return}const remaining=Math.max(0,Math.ceil((state.deadline-Date.now())/1000));el('nextUpdate').textContent=state.busy?'Carregando boletins oficiais...':`Próxima tentativa em ${remaining}s • Atualização a cada ${state.interval}s`;if(remaining===0&&!state.busy&&document.visibilityState==='visible')fetchAll();}
+el('btnRefresh').addEventListener('click',fetchAll);
+el('intervalo').addEventListener('change',e=>{state.interval=Number(e.target.value);state.deadline=Date.now()+state.interval*1000;countdown()});
+el('search').addEventListener('input',e=>{state.query=e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();renderTable()});
+document.querySelectorAll('[data-region]').forEach(btn=>btn.addEventListener('click',()=>{state.region=btn.dataset.region;document.querySelectorAll('[data-region]').forEach(x=>x.classList.toggle('on',x===btn));renderTable()}));
+el('statesBody').addEventListener('click',e=>{const row=e.target.closest('[data-code]');if(row)openDrawer(row.dataset.code)});
+el('statesBody').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-code]')){e.preventDefault();openDrawer(e.target.closest('[data-code]').dataset.code)}});
+el('closeDrawer').addEventListener('click',closeDrawer);el('overlay').addEventListener('click',e=>{if(e.target===el('overlay'))closeDrawer()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.selected)closeDrawer()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&Date.now()>state.deadline&&!state.busy)fetchAll()});
+setInterval(countdown,1000);renderTable();fetchAll();
+</script>
+</body>
+</html>
